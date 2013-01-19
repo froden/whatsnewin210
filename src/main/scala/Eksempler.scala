@@ -1,3 +1,6 @@
+import io.Source
+import language.implicitConversions
+
 object Implicit1 extends App {
 
   class Folkelig(tall: Int) {
@@ -25,6 +28,7 @@ object StringInt extends App {
 }
 
 object ValueClass extends App {
+
   class Temp(val t : Int) extends AnyVal {
     def +(other: Temp): Temp = new Temp(t + other.t)
   }
@@ -33,7 +37,26 @@ object ValueClass extends App {
   val t2 = new Temp(13)
   val t3 = t1 + t2
 
-  //Temp$.MODULE$.extension$toHexString(3)
+  //Temp$.MODULE$.extension$plus(23, 13)
+}
 
+object FutureEx extends App {
+  import scala.concurrent._
+  import scala.concurrent.duration._
+  import ExecutionContext.Implicits.global
 
+  def load(filename: String) = future {
+    Source.fromInputStream(getClass.getResourceAsStream("/" + filename)).getLines()
+  }
+
+  val data = for {
+    keys <- load("keys.txt")
+    values <- load("values.txt")
+  } yield keys.zip(values).toMap
+
+  data.onSuccess {
+    case map => println(map)
+  }
+
+  Await.result(data, Duration.Inf)
 }

@@ -1,6 +1,6 @@
 import org.scalatest.FunSuite
 
-class ImplicitClasses extends FunSuite {
+class ImplicitClassesTest extends FunSuite {
 
   test("Legg til metode på String") {
     //fixme

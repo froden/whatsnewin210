@@ -2,7 +2,7 @@ import org.scalatest.FunSuite
 import spray.json.DefaultJsonProtocol
 import util.parsing.json.{JSON, JSONObject}
 
-class StringInterpolation extends FunSuite {
+class StringInterpolationTest extends FunSuite {
 
   test("enkel bruk") {
     val navn = "Frode"
