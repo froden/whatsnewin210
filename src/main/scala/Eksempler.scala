@@ -60,3 +60,19 @@ object FutureEx extends App {
 
   Await.result(data, Duration.Inf)
 }
+
+object DynamicEks extends App {
+  import language.dynamics
+
+  object Props extends Dynamic {
+    val data = scala.collection.mutable.Map[String, Any]()
+
+    def updateDynamic(key: String)(value: Any) = data(key) = value
+    def selectDynamic(key: String) = data.get(key)
+  }
+
+  Props.navn = "frode"
+  Props.alder = 32
+  println(Props.navn)
+  println(Props.alder)
+}
