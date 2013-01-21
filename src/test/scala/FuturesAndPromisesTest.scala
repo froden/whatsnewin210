@@ -10,6 +10,7 @@ class FuturesAndPromisesTest extends FunSuite {
 
     val start = System.currentTimeMillis()
 
+    //Tar 1 sek å kjøre
     def skjørOgTreg(i: Int) = {
       Thread.sleep(1000)
       if (i < 8) i * 2 else throw new Exception(i + " feilet")
@@ -33,6 +34,7 @@ class FuturesAndPromisesTest extends FunSuite {
 
     val result = Await.result(combined, Duration.Inf)
 
+    //Total kjøretid må være under 3 sek (potensielt > 10 sek)
     assert(System.currentTimeMillis() - 3000 < start)
     assert(result._1 === Seq("8 feilet", "9 feilet", "10 feilet"))
     assert(result._2 === Seq(2, 4, 6, 8, 10, 12, 14))
