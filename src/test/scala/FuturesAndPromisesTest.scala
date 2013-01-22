@@ -16,23 +16,9 @@ class FuturesAndPromisesTest extends FunSuite {
       if (i < 8) i * 2 else throw new Exception(i + " feilet")
     }
 
-    val futures = for (i <- 1 to 10) yield future{skjørOgTreg(i)}
+    val futures = for (i <- 1 to 10) yield skjørOgTreg(i) //FIXME
 
-    val failures = for (f <- futures) yield {
-      f.failed.map(t => Some(t.getMessage)).recover { case _ => None }
-    }
-    val successes = for (f <- futures) yield {
-      f.map(Some(_)).recover { case _ => None }
-    }
 
-    val errorMsgsF = Future.sequence(failures).map(_.flatten)
-    val resultsF = Future.sequence(successes).map(_.flatten)
-    val combined = for {
-      e <- errorMsgsF
-      r <- resultsF
-    } yield (e, r)
-
-    val result = Await.result(combined, Duration.Inf)
 
     //Total kjøretid må være under 3 sek (potensielt > 10 sek)
     assert(System.currentTimeMillis() - 3000 < start)
