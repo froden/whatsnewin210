@@ -1,3 +1,5 @@
+import akka.actor
+import akka.actor.{ActorSystem, ActorLogging, Actor}
 import io.Source
 import language.implicitConversions
 
@@ -75,4 +77,39 @@ object DynamicEks extends App {
   Props.alder = 32
   println(Props.navn)
   println(Props.alder)
+}
+
+object Actors extends App {
+
+  case class Greeting(who: String)
+
+  class GreetingActor extends Actor with ActorLogging {
+    def receive = {
+      case Greeting(who) ⇒ log.info("Hello " + who)
+    }
+  }
+
+  val system = ActorSystem("MySystem")
+  val greeter = system.actorOf(actor.Props[GreetingActor], name = "greeter")
+  greeter ! Greeting("Charlie Parker")
+}
+
+object ReflectionEks extends App {
+
+  import scala.reflect.runtime.{universe => ru}
+
+  val l = List(1,2,3)
+  def getTypeTag[T: ru.TypeTag](obj: T) = ru.typeTag[T]
+  val theType = getTypeTag(l).tpe // theType: ru.Type = List[Int]
+
+
+  case class Person(name: String)
+
+  val mirror = ru.runtimeMirror(getClass.getClassLoader)
+  val classPerson = ru.typeOf[Person].typeSymbol.asClass
+  val classMirror = mirror.reflectClass(classPerson)
+  val ctor = ru.typeOf[Person].declaration(ru.nme.CONSTRUCTOR).asMethod
+  val ctorm = classMirror.reflectConstructor(ctor)
+  val p = ctorm("Mike")
+  println(p)
 }
